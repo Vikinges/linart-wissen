@@ -1,0 +1,11 @@
+# install torch first (see README)
+sentence-transformers>=3,<6
+transformers>=4.45,<5
+huggingface_hub>=0.25,<1.0
+fastapi
+uvicorn
+numpy
+rank-bm25
+pypdfium2
+python-docx
+beautifulsoup4

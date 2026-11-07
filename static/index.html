@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LinArt Wissen</title>
+<style>
+:root{--bg:#161a20;--panel:#1c2129;--raised:#242b35;--sunken:#12161b;--line:#2e3742;--line-soft:#252d37;--text:#dde4ea;--muted:#8b97a4;--faint:#5f6b78;
+ --accent:#6cd3e6;--accent-ink:#0d2a31;--accent-soft:rgba(108,211,230,.14);--warn:#f0a24a;--err:#ef6b6b;--ok:#7ad69a;--r:7px;
+ --font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color-scheme:dark}
+*{box-sizing:border-box} html,body{margin:0;height:100%} body{background:var(--bg);color:var(--text);font:14.5px/1.55 var(--font);overflow:hidden}
+button,input,textarea{font:inherit;color:inherit} [hidden]{display:none!important}
+.top{height:52px;display:flex;align-items:center;gap:14px;padding:0 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.08em;font-size:13px} .brand span{color:var(--muted);font-weight:500}
+.spacer{flex:1}
+.pill{display:flex;align-items:center;gap:8px;padding:5px 12px;border:1px solid var(--line);border-radius:99px;background:var(--sunken);font-size:12.5px;color:var(--muted)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--faint)} .pill.ok i{background:var(--ok)} .pill.bad i{background:var(--err)} .pill.busy i{background:var(--warn)}
+.app{display:grid;grid-template-columns:330px minmax(0,1fr);height:calc(100vh - 52px)}
+.side{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;display:flex;flex-direction:column}
+.sec{padding:14px 16px;border-bottom:1px solid var(--line-soft)} h2{font-size:14px;margin:0 0 8px}
+.hint{font-size:12px;color:var(--muted);margin:6px 0 0}
+textarea{width:100%;background:var(--sunken);border:1px solid var(--line);border-radius:var(--r);padding:8px 10px;resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--raised);border:1px solid var(--line);border-radius:var(--r);padding:7px 12px;cursor:pointer;white-space:nowrap}
+.btn:hover:not(:disabled){border-color:var(--faint)} .btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:650}
+.docs{padding:6px 10px 14px;overflow-y:auto;flex:1}
+.doc{padding:6px 8px;border-radius:6px;font-size:12.5px;display:flex;gap:8px;justify-content:space-between}
+.doc:hover{background:var(--raised)} .doc a{color:var(--text);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc small{color:var(--muted);white-space:nowrap} .doc.err small{color:var(--err)}
+.main{display:flex;flex-direction:column;min-width:0}
+.thread{flex:1;overflow-y:auto;padding:24px max(24px,calc((100% - 860px)/2))}
+.empty{color:var(--muted);max-width:560px;margin:40px auto;text-align:center}
+.empty b{display:block;color:var(--text);font-size:20px;margin-bottom:8px}
+.ex{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.ex button{background:var(--sunken);border:1px solid var(--line);border-radius:99px;padding:5px 12px;cursor:pointer;color:var(--muted);font-size:13px}
+.ex button:hover{border-color:var(--accent);color:var(--text)}
+.q{margin:22px 0 8px;font-weight:650;font-size:15.5px}
+.a{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.a p{margin:.4em 0} .a ul,.a ol{margin:.4em 0;padding-left:1.4em} .a code{background:var(--sunken);padding:1px 5px;border-radius:4px;font-size:.92em}
+.cite{display:inline-block;min-width:18px;padding:0 5px;margin:0 1px;border-radius:4px;background:var(--accent-soft);color:var(--accent);font-size:11.5px;font-weight:700;text-decoration:none;text-align:center;vertical-align:1px}
+.srcs{display:grid;gap:6px;margin-top:10px}
+.src{display:grid;grid-template-columns:26px 1fr;gap:8px;font-size:12.5px;padding:8px 10px;background:var(--sunken);border:1px solid var(--line-soft);border-radius:8px;text-decoration:none;color:var(--text)}
+.src:hover{border-color:var(--accent)} .src b{color:var(--accent)} .src div{overflow:hidden} .src small{color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{font-size:12px;color:var(--faint);margin-top:8px}
+.ask{border-top:1px solid var(--line);background:var(--panel);padding:12px max(16px,calc((100% - 860px)/2))}
+.ask form{display:flex;gap:8px;align-items:flex-end}
+.ask textarea{min-height:46px;max-height:180px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--faint);border-top-color:var(--accent);border-radius:50%;animation:s 1s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+.toasts{position:fixed;right:16px;bottom:90px;display:flex;flex-direction:column;gap:8px;z-index:9}
+.toast{background:var(--raised);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--r);padding:9px 13px;font-size:13px;max-width:380px} .toast.err{border-left-color:var(--err)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><svg width="28" height="26" viewBox="0 0 30 28" aria-hidden="true"><path d="M1.5 26 L11 11 L15 16.5 L20 7 L28.5 26 Z" fill="#3a4654"/><path d="M20 7 L16.6 13.4 L18.4 12.6 L20 14.6 L21.8 12.4 L23.2 13.1 Z" fill="#fff"/><path d="M1.5 26 H28.5" stroke="var(--accent)" stroke-width="1.6"/></svg>LINART <span>WISSEN</span></div>
+  <div class="spacer"></div>
+  <div class="pill" id="pill"><i></i><span id="pillT">…</span></div>
+</header>
+<main class="app">
+  <aside class="side">
+    <div class="sec">
+      <h2>Папки с документами</h2>
+      <textarea id="folders" rows="3" spellcheck="false"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px"><button class="btn" id="saveF">Сохранить и индексировать</button><button class="btn" id="reidx" title="Проверить новые и изменённые файлы">↻</button></div>
+      <p class="hint">По одной папке на строку. PDF, DOCX, TXT, MD, HTML, CSV. Новые и изменённые файлы подхватываются каждые 10 минут. Скан без текстового слоя пока пропускается.</p>
+    </div>
+    <div class="sec" style="padding-bottom:6px"><h2 id="docsH">Документы</h2></div>
+    <div class="docs" id="docs"></div>
+  </aside>
+  <section class="main">
+    <div class="thread" id="thread">
+      <div class="empty" id="empty"><b>Спросите свои документы</b>Ответ строится только по вашим файлам, со ссылками на страницу. Всё работает локально: поиск на GPU, ответ — модель в LM Studio.
+        <div class="ex" id="ex"></div></div>
+    </div>
+    <div class="ask"><form id="form"><textarea id="q" placeholder="Вопрос на русском, немецком или английском…  (Enter — отправить, Shift+Enter — новая строка)"></textarea><button class="btn primary" id="go">Спросить</button></form></div>
+  </section>
+</main>
+<div class="toasts" id="toasts"></div>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(m,k){ const e=document.createElement("div"); e.className="toast "+(k||""); e.textContent=m; $("#toasts").appendChild(e); setTimeout(()=>e.remove(), 7000); }
+async function api(p,o){ const r=await fetch(p,o); let d=null; try{d=await r.json()}catch(e){} if(!r.ok) throw new Error((d&&d.detail)||r.statusText); return d; }
+const EX = ["Как подключить устройство к Wi-Fi?","Welche Schritte braucht die WLAN-Einrichtung der Wärmepumpe?","What does the indicator light mean during pairing?"];
+$("#ex").innerHTML = EX.map(x => `<button>${esc(x)}</button>`).join("");
+$("#ex").querySelectorAll("button").forEach(b => b.onclick = () => { $("#q").value = b.textContent; ask(); });
+
+function md(text, sources){
+  // minimal, safe markdown: escape first, then format
+  let h = esc(text);
+  h = h.replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
+  h = h.replace(/\[(\d{1,2})\]/g, (m, n) => { const s = sources.find(x => x.n === +n); return s ? `<a class="cite" href="${esc(s.url)}" target="_blank" title="${esc(s.file + (s.page ? ", S. " + s.page : ""))}">${n}</a>` : m; });
+  const lines = h.split(/\n/); let out = "", inList = false;
+  for(const l of lines){
+    const m = l.match(/^\s*(?:[-*•]|\d+[.)])\s+(.*)/);
+    if(m){ if(!inList){ out += "<ul>"; inList = true; } out += `<li>${m[1]}</li>`; }
+    else { if(inList){ out += "</ul>"; inList = false; } if(l.trim()) out += `<p>${l}</p>`; }
+  }
+  return out + (inList ? "</ul>" : "");
+}
+async function ask(){
+  const q = $("#q").value.trim(); if(!q) return;
+  $("#empty").hidden = true; $("#q").value = ""; $("#go").disabled = true;
+  const box = document.createElement("div");
+  box.innerHTML = `<div class="q">${esc(q)}</div><div class="a"><span class="spin"></span> <span style="color:var(--muted)">ищу в документах и формулирую ответ…</span></div>`;
+  $("#thread").appendChild(box); box.scrollIntoView({behavior:"smooth", block:"end"});
+  try{
+    const r = await api("/api/ask", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({q})});
+    const srcs = r.sources.map(s => `<a class="src" href="${esc(s.url)}" target="_blank"><b>${s.n}</b><div>${esc(s.file)}${s.page ? " · стр. " + s.page : ""}<small>${esc(s.snippet.replace(/^\[[^\]]*\]\s*/, ""))}</small></div></a>`).join("");
+    box.querySelector(".a").innerHTML = md(r.answer, r.sources) + (srcs ? `<div class="srcs">${srcs}</div>` : "") + `<div class="meta">${r.elapsed} с · ${r.sources.length} фрагментов</div>`;
+  }catch(e){ box.querySelector(".a").innerHTML = `<span style="color:var(--err)">${esc(e.message)}</span>`; }
+  finally{ $("#go").disabled = false; box.scrollIntoView({behavior:"smooth", block:"end"}); $("#q").focus(); }
+}
+$("#form").onsubmit = e => { e.preventDefault(); ask(); };
+$("#q").addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); ask(); } });
+
+let foldersLoaded = false;
+async function status(){
+  let s; try{ s = await api("/api/status"); }catch(e){ $("#pill").className = "pill bad"; $("#pillT").textContent = "сервер не отвечает"; return; }
+  if(!foldersLoaded){ $("#folders").value = s.folders.join("\n"); foldersLoaded = true; }
+  const p = $("#pill"); p.className = "pill " + (s.indexing ? "busy" : (s.llm_ok ? "ok" : "bad"));
+  $("#pillT").textContent = s.indexing ? `индексирую ${s.done}/${s.total}: ${s.current || ""}` :
+    `${s.docs} док. · ${s.chunks} фрагм.` + (s.llm_ok ? " · LM Studio ✓" : " · LM Studio не запущен");
+}
+async function docs(){
+  try{ const d = await api("/api/docs");
+    $("#docsH").textContent = `Документы (${d.length})`;
+    $("#docs").innerHTML = d.map(x => `<div class="doc ${x.error ? "err" : ""}" title="${esc(x.path)}"><a href="/api/file/${x.id}" target="_blank">${esc(x.name)}</a><small>${x.error ? "ошибка" : (x.pages ? x.pages + " стр." : "") + (x.scanned_pages ? " · " + x.scanned_pages + " скан" : "")}</small></div>`).join("") || `<p class="hint" style="padding:0 6px">Пока пусто — положите файлы в папку слева.</p>`;
+  }catch(e){}
+}
+$("#saveF").onclick = async () => { try{ await api("/api/folders", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({folders: $("#folders").value.split(/\n/)})}); toast("Сохранено, индексирую…"); }catch(e){ toast(e.message, "err"); } };
+$("#reidx").onclick = async () => { await api("/api/reindex", {method:"POST"}); toast("Проверяю файлы…"); };
+status(); docs(); setInterval(status, 3000); setInterval(docs, 10000);
+</script>
+</body>
+</html>

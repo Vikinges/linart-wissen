@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+# runtime / private data - never commit
+*.log
+*.err
+*.out
+data/
+models/
+.miopen/
+.cache/
+config.json
+*.bak*
